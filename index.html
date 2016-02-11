@@ -1,0 +1,257 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>depfinder &mdash; depfinder v1.0 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="depfinder v1.0 documentation" href="#"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="#" class="fa fa-home"> depfinder</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">depfinder</a></li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#using-depfinder">Using depfinder</a></li>
+<li><a class="reference internal" href="#api">API</a></li>
+<li><a class="reference internal" href="#ipython-jupyter-notebook-support">IPython/Jupyter Notebook support</a></li>
+</ul>
+</div>
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="#">depfinder</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="#">Docs</a> &raquo;</li>
+      
+    <li>depfinder</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/index.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <p><a class="reference external" href="https://ericdill.github.io/depfinder">docs</a></p>
+<p><a class="reference external" href="https://github.com/ericdill/depfinder">github</a></p>
+<img alt="http://mybinder.org/badge.svg:target:http://mybinder.org/repo/ericdill/depfinder" src="http://mybinder.org/badge.svg:target:http://mybinder.org/repo/ericdill/depfinder" />
+<a class="reference external image-reference" href="https://travis-ci.org/ericdill/depfinder"><img alt="https://travis-ci.org/ericdill/depfinder.svg?branch=master" src="https://travis-ci.org/ericdill/depfinder.svg?branch=master" /></a>
+<a class="reference external image-reference" href="http://codecov.io/github/ericdill/depfinder?branch=master"><img alt="http://codecov.io/github/ericdill/depfinder/coverage.svg?branch=master" src="http://codecov.io/github/ericdill/depfinder/coverage.svg?branch=master" /></a>
+<a class="reference external image-reference" href="https://coveralls.io/github/ericdill/depfinder?branch=master"><img alt="https://coveralls.io/repos/ericdill/depfinder/badge.svg?branch=master&amp;service=github" src="https://coveralls.io/repos/ericdill/depfinder/badge.svg?branch=master&amp;service=github" /></a>
+<div class="section" id="depfinder">
+<h1>depfinder<a class="headerlink" href="#depfinder" title="Permalink to this headline">¶</a></h1>
+<p>Find all the unique imports in your library, automatically, because who likes
+do it by hand?  <a class="reference external" href="https://github.com/ericdill/depfinder">depfinder</a> uses the <a class="reference external" href="https://docs.python.org/2/library/ast.html">ast</a> (Abstract Syntax Tree) module
+(and <a class="reference external" href="https://greentreesnakes.readthedocs.org/en/latest/">more ast docs</a>) to find
+all <code class="xref py py-class docutils literal"><span class="pre">ast.Try</span></code> and <code class="xref py py-class docutils literal"><span class="pre">ast.ImportFrom</span></code> nodes.  These
+<code class="xref py py-class docutils literal"><span class="pre">ast.Import</span></code> and <code class="xref py py-class docutils literal"><span class="pre">ast.ImportFrom</span></code> nodes are then grouped
+according to the following categories, in order of decreasing precedence:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>relative</strong></dt>
+<dd><p class="first last">The import is a relative import from within the same library</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>builtin</strong></dt>
+<dd><p class="first last">The import is built into the standard library, as determined by scraping the
+official python docs for the builtins with <a class="reference external" href="https://github.com/jackmaney/python-stdlib-list">stdlib-list</a></p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>questionable</strong></dt>
+<dd><p class="first">The import occurs inside any combination of</p>
+<ul class="simple">
+<li><code class="xref py py-class docutils literal"><span class="pre">ast.Try</span></code> (<code class="xref py py-class docutils literal"><span class="pre">ast.TryExcept</span></code> on py27)</li>
+<li><code class="xref py py-class docutils literal"><span class="pre">ast.FunctionDef</span></code></li>
+<li><code class="xref py py-class docutils literal"><span class="pre">ast.ClassDef</span></code></li>
+</ul>
+<p class="last">The module may be importable without these imports, but the it will likely
+not have full functionality.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>required</strong></dt>
+<dd><p class="first last">The import occurs at the top level of the module and will get executed
+when the module is imported. These imports must be accounted for in an
+environment, or the module will not be importable.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal"><span class="pre">depfinder</span></code> is on pypi. It is tested against Python 2.7, 3.3, 3.4 and 3.5.</p>
+<div class="highlight-python"><div class="highlight"><pre>pip install depfinder
+</pre></div>
+</div>
+<p>It is available via conda.</p>
+<div class="highlight-python"><div class="highlight"><pre>conda install -c ericdill depfinder
+</pre></div>
+</div>
+<p>It is also via github.</p>
+<div class="highlight-python"><div class="highlight"><pre>git clone git@github.com:ericdill/depfinder
+cd depfinder
+python setup.py install
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-python"><div class="highlight"><pre>pip install https://github.com/ericdill/depfinder/zipball/master#egg=depfinder
+</pre></div>
+</div>
+<p>It has one dependency, <a class="reference external" href="https://github.com/jackmaney/python-stdlib-list">stdlib_list</a>, which is where I get the
+list of libraries built in to the standard library. <code class="docutils literal"><span class="pre">stdlib-list</span></code> can be
+installed via pip</p>
+<div class="highlight-python"><div class="highlight"><pre>pip install stdlib-list
+</pre></div>
+</div>
+<p>or conda</p>
+<div class="highlight-python"><div class="highlight"><pre>conda install -c ericdill stdlib-list
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-depfinder">
+<h1>Using depfinder<a class="headerlink" href="#using-depfinder" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="https://github.com/ericdill/depfinder/blob/master/depfinder_usage.ipynb">See this notebook</a></p>
+</div>
+<div class="section" id="api">
+<h1>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="ipython-jupyter-notebook-support">
+<h1>IPython/Jupyter Notebook support<a class="headerlink" href="#ipython-jupyter-notebook-support" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal"><span class="pre">depfinder</span></code> has support for v4 Jupyter notebooks.</p>
+</div>
+
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Eric Dill.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'v1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
